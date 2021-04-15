@@ -93,7 +93,7 @@ public class GUI_ChatRoom extends JFrame {
     	this.dis = dis;
     	this.roomNumber = roomNumber;
     	this.id = id;
-    	ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); // �봽�젅�엫 �븘�씠肄�
+    	ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); 
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
     	
@@ -106,45 +106,46 @@ public class GUI_ChatRoom extends JFrame {
         talkPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         talkPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        txtsend.setBounds(new Rectangle(15, 320, 380, 25)); // ���솕 �엯�젰李�
+        txtsend.setBounds(new Rectangle(15, 320, 380, 25)); 
 
-        btn_set.setBounds(new Rectangle(15, 10, 100, 25));// 諛� �꽕�젙 踰꾪듉
-        btn_set.setText("諛� �꽕�젙");
+        btn_set.setBounds(new Rectangle(15, 10, 120, 25));
+        btn_set.setText("채팅방 설정");
 
-        btn_ok.setBounds(new Rectangle(400, 320, 60, 25));// 蹂대궡湲� 踰꾪듉
-        btn_ok.setText("�솗�씤");
+        
+        btn_ok.setBounds(new Rectangle(400, 320, 60, 25));
+        btn_ok.setText("확인");
 
 
-        btn_file.setBounds(new Rectangle(470, 320, 50, 25));// 蹂대궡湲� 踰꾪듉
+        btn_file.setBounds(new Rectangle(470, 320, 50, 25));
         btn_file.setText("+");
         btn_file.setFont(new Font("",Font.ITALIC,15));
         
-        jLabel_boss.setBounds(new Rectangle(390, 10, 75, 20));// 諛⑹옣 �씠由� �씪踰�
-        jLabel_boss.setText("諛⑹옣");
+        jLabel_boss.setBounds(new Rectangle(390, 10, 75, 20));
+        jLabel_boss.setText("방장");
 
-        jLabel_tag.setBounds(new Rectangle(200, 10, 75, 20));// 諛� �씠由� �씪踰�
-        jLabel_tag.setText("諛⑹씠由�");
-        lblinwon_roomname.setBounds(new Rectangle(270, 10, 120, 25));// 諛⑹옣 �씠由� �쓣�슦湲�
-        lblinwon_roomname.setText("roomname");
+        jLabel_tag.setBounds(new Rectangle(200, 10, 75, 20));
+        jLabel_tag.setText("방 이름");
+        lblinwon_roomname.setBounds(new Rectangle(270, 10, 120, 25));
+        lblinwon_roomname.setText("");
         
-        lblinwon_boss.setBounds(new Rectangle(430, 10, 90, 25));// 諛⑹옣 �씠由� �쓣�슦湲�
-        lblinwon_boss.setText("諛⑹옣�씠由�");
+        lblinwon_boss.setBounds(new Rectangle(430, 10, 90, 25));
+        lblinwon_boss.setText("");
         lblinwon_boss.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         lblinwon_boss.setHorizontalAlignment(SwingConstants.CENTER);
         lblinwon_boss.setHorizontalTextPosition(SwingConstants.CENTER);
 
-        jLabel_guest.setBounds(new Rectangle(550, 10, 75, 20));// 李몄뿬�옄 �씠由� �씪踰�
-        jLabel_guest.setText("李몄뿬�옄");
+        jLabel_guest.setBounds(new Rectangle(550, 10, 75, 20));
+        jLabel_guest.setText("방 인원");
 
-        lblinwon_guest.setBounds(new Rectangle(600, 10, 60, 25)); //李몄뿬�옄 �닽�옄 �쓣�슦湲�
+        lblinwon_guest.setBounds(new Rectangle(600, 10, 60, 25)); 
         lblinwon_guest.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         lblinwon_guest.setHorizontalAlignment(SwingConstants.CENTER);
         lblinwon_guest.setHorizontalTextPosition(SwingConstants.CENTER);
 
-        btn_close.setBounds(new Rectangle(560, 320, 90, 25)); //�굹媛�湲� 踰꾪듉
-        btn_close.setText("�굹媛�湲�");
+        btn_close.setBounds(new Rectangle(560, 320, 90, 25)); 
+        btn_close.setText("나가기");
 
-        list.setBounds(new Rectangle(540, 40, 130, 200));// 李몄뿬�옄 紐낅떒
+        list.setBounds(new Rectangle(540, 40, 130, 200));
 
         this.getContentPane().add(list, null);
         this.getContentPane().add(btn_close, null);
@@ -161,7 +162,7 @@ public class GUI_ChatRoom extends JFrame {
         this.getContentPane().add(talkPane1, null);
         talkPane1.getViewport().add(txtarea, null);
 
-        btn_set.addActionListener(new ActionListener() { // �꽕�젙 踰꾪듉 �옉�룞
+        btn_set.addActionListener(new ActionListener() { 
             @Override
             public void actionPerformed(ActionEvent e) {
                 new GUI_ChattingRoomSetting();
@@ -169,14 +170,14 @@ public class GUI_ChatRoom extends JFrame {
         });
 
        
-        btn_ok.addActionListener(new ActionListener() { //�솗�씤 踰꾪듉 �옉�룞
+        btn_ok.addActionListener(new ActionListener() { 
             @Override
             public void actionPerformed(ActionEvent e) {
 
             }
         });
 
-        btn_close.addActionListener(new ActionListener() { //�굹媛�湲� 踰꾪듉 �옉�룞
+        btn_close.addActionListener(new ActionListener() { 
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
@@ -190,16 +191,15 @@ public class GUI_ChatRoom extends JFrame {
             	dispose();
             }
         });
-        btn_file.addActionListener(new ActionListener() { //�뙆�씪 踰꾪듉 �옉�룞
+        btn_file.addActionListener(new ActionListener() { 
             @Override
             public void actionPerformed(ActionEvent arg0) {
 
             }
         });
-        //諛� �뾽�뜲�씠�듃
+     
         room_update();
-    // �뜲�씠�꽣踰좎씠�뒪�븯怨� �뿰寃고븷�븣 connection -> statement or prestatement
-    // �떎瑜� 而댄벂�꽣�� �뿰寃고븷�븣 Serversocket Socket   .getinputstream or outputstream
+   
         this.addWindowListener(new WindowListener() {
 			
 			@Override
@@ -253,9 +253,12 @@ public class GUI_ChatRoom extends JFrame {
 		});
         
         PopupMenu pm = new PopupMenu();
-        MenuItem item1 = new MenuItem("Show profile");
-        MenuItem item2 = new MenuItem("retire");
-        MenuItem item3 = new MenuItem("report");
+        MenuItem item1 = new MenuItem("프로필 보기");
+        MenuItem item2 = new MenuItem("강퇴");
+        MenuItem item3 = new MenuItem("신고하기");
+        item1.setActionCommand("1");
+        item2.setActionCommand("2");
+        item3.setActionCommand("3");
         pm.add(item1);
         pm.add(item2);
         pm.add(item3);
@@ -265,8 +268,15 @@ public class GUI_ChatRoom extends JFrame {
         DefaultListModel<String> m = new DefaultListModel<>();
         m.addElement(ml.get(0));
         m.addElement(ml.get(1));
+        list.setModel(m);
         list.add(pm);
-        
+        pm.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(e.getActionCommand());
+			}
+		});
         list.addMouseListener(new MouseListener() {
 			
 			@Override

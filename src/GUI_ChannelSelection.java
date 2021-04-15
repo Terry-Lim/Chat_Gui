@@ -9,6 +9,8 @@ import java.awt.event.MouseListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -31,7 +34,53 @@ public class GUI_ChannelSelection extends JFrame {
 	private DataOutputStream dos;
 	private DataInputStream dis;
 	private String id;
+	private String[] datas;
+	private JList<String> list;
+	
 	public void ChannelHomeReset() {
+		
+		
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					dos.writeInt(Command.RESETROOM);
+					int roomnum = dis.readInt();
+					String roomname = null;
+					int max = 0;
+					int num = 0;
+					String roomtxt = null;
+					List <String> roomnamelist = new ArrayList<>();
+		 			for (int i = 0; i < roomnum; i++) {
+		 				dos.writeInt(Command.GETSELETEDROOM);
+						dos.writeInt(i);
+						roomname = dis.readUTF();
+						max = dis.readInt();
+						num = dis.readInt();
+						roomtxt = roomname + "                                                                                           " + num + "/" + max;
+						int length = roomname.length();
+						StringBuilder sb = new StringBuilder();
+						sb.append(roomtxt);
+						for (int j = 10; j > length; j --) {
+							sb.insert(11, "   ");
+						}
+						roomnamelist.add(String.valueOf(sb));
+					}
+		 			DefaultListModel<String> model = new DefaultListModel<>();
+		 			
+		 			for (int i =0; i < roomnamelist.size(); i++) {
+		 				model.addElement(roomnamelist.get(i));
+		 			}
+		 			list.setModel(model);
+					//String[] datas = {"Char1","Char2","Char3"};
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}); t.start();
+		
 		
 	}
 	public void FavoriteChannel() {
@@ -130,10 +179,10 @@ public class GUI_ChannelSelection extends JFrame {
 		lblNewLabel_1.setBounds(336, 34, 107, 16);
 		contentPane.add(lblNewLabel_1);
 		
-		//리스트에 보여질 항목들
-		String[] datas = {"Char1","Char2","Char3","Char4","Char5","Char6","Char5","Char5","Char5","Char5","Char5","Char5","Char5","Char5","Char5"};
-		JList<String> list = new JList<String>(); //명시적 초기화			
+		datas = new String[] {"Char1","Char2","Char3","Char4","Char5","Char6","Char5","Char5","Char5","Char5","Char5","Char5","Char5","Char5","Char5"};
+		list = new JList<String>();
 		list.setListData(datas);  //리스트 객체의 설정과 항목들 설정
+
 		list.setSelectionBackground(Color.YELLOW);
 		list.setSelectionForeground(Color.RED);
 		list.addMouseListener(new MouseListener() {
@@ -192,6 +241,7 @@ public class GUI_ChannelSelection extends JFrame {
 		JLabel lblNewLabel_2 = new JLabel("New label"); //수정 현재인원/ 최대인원
 		lblNewLabel_2.setBounds(336, 47, 107, 16);
 		contentPane.add(lblNewLabel_2);
+		ChannelHomeReset();
 		setVisible(true);
 	
 	}

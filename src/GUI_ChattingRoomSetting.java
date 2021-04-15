@@ -44,7 +44,7 @@ public class GUI_ChattingRoomSetting extends JFrame {
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
 		
-		setTitle("�� ����");
+		setTitle("방 설정");
 		number = 0;
 		setBounds(100, 100, 450, 350);
 		contentPane = new JPanel();
