@@ -1,6 +1,4 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,21 +10,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EtchedBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.border.EmptyBorder;
 
 public class GUI_ChannelSelection extends JFrame {
 
@@ -58,16 +51,36 @@ public class GUI_ChannelSelection extends JFrame {
 						roomname = dis.readUTF();
 						max = dis.readInt();
 						num = dis.readInt();
-						roomtxt = roomname + "                                                                                           " + num + "/" + max;
-						int length = roomname.length();
-						StringBuilder sb = new StringBuilder();
+						roomtxt = roomname + "                                   " +num + "/" + max;
+						StringBuffer sb = new StringBuffer();
 						sb.append(roomtxt);
-						for (int j = 10; j > length; j --) {
-							sb.insert(11, "   ");
+						int n = 100 - roomtxt.getBytes().length; // roomtxt 바이트값
+						for (int j = 0; j < n; j++) {
+							sb.insert(30, " ");
+							if (j == 59 ) {
+								sb.insert(30, "  ");
+							} else if (j == 57 ) {
+								sb.insert(30, "  ");
+							} else if (j == 55 ) {
+								sb.insert(30, "  ");
+							} else if (j == 53 ) {
+								sb.insert(30, "  ");
+							} else if (j == 51 ) {
+								sb.insert(30, "  ");
+							} else if (j == 49 ) {
+								sb.insert(30, "  ");
+							} else if (j == 47 ) {
+								sb.insert(30, "  ");
+							} else if (j == 45 ) {
+								sb.insert(30, "  ");
+							} else if (j == 43 ) {
+								sb.insert(30, "  ");
+							}
 						}
 						roomnamelist.add(String.valueOf(sb));
 					}
 		 			DefaultListModel<String> model = new DefaultListModel<>();
+		 			model.addElement(roomtxt);
 		 			
 		 			for (int i =0; i < roomnamelist.size(); i++) {
 		 				model.addElement(roomnamelist.get(i));

@@ -7,6 +7,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -14,6 +18,15 @@ import javax.swing.JList;
 import javax.swing.SwingConstants;
 
 public class GUI_Profile extends JFrame {
+	
+	private DataOutputStream dos;
+	private DataInputStream dis;
+	
+	JLabel textPane;
+	JLabel textPane_1;
+	JLabel textPane_1_1;
+	JLabel textPane_1_2;
+	JLabel textPane_1_3;
 
 	private JPanel contentPane;
 
@@ -48,47 +61,47 @@ public class GUI_Profile extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("\uC544\uC774\uB514");
-		lblNewLabel.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 15));
+		lblNewLabel.setFont(new Font("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½", Font.BOLD, 15));
 		lblNewLabel.setBounds(120, 124, 57, 21);
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("\uC774\uB984");
-		lblNewLabel_1.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 15));
+		lblNewLabel_1.setFont(new Font("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½", Font.BOLD, 15));
 		lblNewLabel_1.setBounds(120, 163, 57, 15);
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("\uC0DD\uB144\uC6D4\uC77C");
-		lblNewLabel_2.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 15));
+		lblNewLabel_2.setFont(new Font("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½", Font.BOLD, 15));
 		lblNewLabel_2.setBounds(120, 201, 69, 15);
 		contentPane.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_3 = new JLabel("\uC804\uD654\uBC88\uD638");
-		lblNewLabel_3.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 15));
+		lblNewLabel_3.setFont(new Font("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½", Font.BOLD, 15));
 		lblNewLabel_3.setBounds(120, 242, 69, 15);
 		contentPane.add(lblNewLabel_3);
 		
 		JLabel lblNewLabel_4 = new JLabel("\uC0C1\uD0DC\uBA54\uC138\uC9C0");
-		lblNewLabel_4.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 15));
+		lblNewLabel_4.setFont(new Font("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½", Font.BOLD, 15));
 		lblNewLabel_4.setBounds(120, 284, 83, 15);
 		contentPane.add(lblNewLabel_4);
 		
-		JTextPane textPane = new JTextPane();
+		textPane = new JLabel();
 		textPane.setBounds(203, 124, 120, 21);
 		contentPane.add(textPane);
 		
-		JTextPane textPane_1 = new JTextPane();
+		textPane_1 = new JLabel();
 		textPane_1.setBounds(203, 163, 120, 21);
 		contentPane.add(textPane_1);
 		
-		JTextPane textPane_1_1 = new JTextPane();
+		textPane_1_1 = new JLabel();
 		textPane_1_1.setBounds(203, 201, 120, 21);
 		contentPane.add(textPane_1_1);
 		
-		JTextPane textPane_1_2 = new JTextPane();
+		textPane_1_2 = new JLabel();
 		textPane_1_2.setBounds(203, 242, 120, 21);
 		contentPane.add(textPane_1_2);
 		
-		JTextPane textPane_1_3 = new JTextPane();
+		textPane_1_3 = new JLabel();
 		textPane_1_3.setBounds(203, 282, 120, 107);
 		contentPane.add(textPane_1_3);
 		
@@ -96,8 +109,42 @@ public class GUI_Profile extends JFrame {
 		lblNewLabel_5.setForeground(Color.BLACK);
 		lblNewLabel_5.setBackground(Color.WHITE);
 		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_5.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 25));
+		lblNewLabel_5.setFont(new Font("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½", Font.BOLD, 25));
 		lblNewLabel_5.setBounds(120, 36, 203, 78);
 		contentPane.add(lblNewLabel_5);
+	}
+	
+	public void profileview() {
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					dos.writeInt(Command.RESETROOM);
+					String id = null;
+					String name = null;
+					String tell = null;
+					String birthdate = null;
+					String status = null;
+					
+					id = dis.readUTF();
+					name = dis.readUTF();
+					tell = dis.readUTF();
+					birthdate = dis.readUTF();
+					status = dis.readUTF();
+					
+					textPane.setText(id);
+					textPane_1.setText(name);
+					textPane_1_1.setText(tell);
+					textPane_1_2.setText(birthdate);
+					textPane_1_3.setText(status);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}); t.start();
 	}
 }

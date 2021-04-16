@@ -259,6 +259,17 @@ public class GUI_ChatRoom extends JFrame {
         item1.setActionCommand("1");
         item2.setActionCommand("2");
         item3.setActionCommand("3");
+        
+        item1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new GUI_Profile();
+				System.out.println("클릭");
+				
+			}
+		});
+        
         pm.add(item1);
         pm.add(item2);
         pm.add(item3);
