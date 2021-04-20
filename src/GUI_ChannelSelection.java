@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -29,9 +30,15 @@ public class GUI_ChannelSelection extends JFrame {
 	private String id;
 	private String[] datas;
 	private JList<String> list;
+	private HashMap<Integer, String> room;
+	
+	
+	public void setroomNum(int x, String roomname) {
+		room.put(x, roomname);
+	}
 	
 	public void ChannelHomeReset() {
-		
+		room = new HashMap<>();
 		
 		Thread t = new Thread(new Runnable() {
 			
@@ -49,6 +56,7 @@ public class GUI_ChannelSelection extends JFrame {
 		 				dos.writeInt(Command.GETSELETEDROOM);
 						dos.writeInt(i);
 						roomname = dis.readUTF();
+						setroomNum(Integer.valueOf(i), roomname);
 						max = dis.readInt();
 						num = dis.readInt();
 						roomtxt = roomname + "                                   " +num + "/" + max;
@@ -168,7 +176,14 @@ public class GUI_ChannelSelection extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String roomname = JOptionPane.showInputDialog("방 찾기", "방 제목을 입력하세요");
-				
+				try {
+					dos.writeInt(Command.FINDROOM);
+					dos.writeUTF(roomname);
+					// 정리해야함
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			
 			}
 		});
@@ -230,17 +245,19 @@ public class GUI_ChannelSelection extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 			
 				int roomNum = list.getSelectedIndex();
-				
+				String txt =(String) list.getSelectedValue();
+				String[] split = txt.split("                ");
+				String rn = split[0];
 				try {
 					dos.writeInt(Command.ENTERROOM);
-					dos.writeInt(roomNum);
+					dos.writeUTF(rn);
 					dos.writeUTF(id);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
-				new GUI_ChatRoom(dos, dis, roomNum, id);
+				new GUI_ChatRoom(dos, dis, room.get(roomNum), id);
 			}
 		});
 		JScrollPane scrollPane = new JScrollPane(list);	

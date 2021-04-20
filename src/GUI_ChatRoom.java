@@ -88,7 +88,7 @@ public class GUI_ChatRoom extends JFrame {
         t.start();
     }
     
-    GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, int roomNumber, String id) {
+    GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, String roomname, String id) {
     	this.dos = dos;
     	this.dis = dis;
     	this.roomNumber = roomNumber;
@@ -182,7 +182,7 @@ public class GUI_ChatRoom extends JFrame {
             public void actionPerformed(ActionEvent e) {
             	try {
             		dos.writeInt(Command.EXITROOM);
-					dos.writeInt(roomNumber);
+					dos.writeUTF(roomname);
 					dos.writeUTF(id);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
