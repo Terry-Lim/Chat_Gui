@@ -12,9 +12,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,9 @@ public class GUI_ChatRoom extends JFrame {
     private DataOutputStream dos;
     private DataInputStream dis;
     private int roomNumber;
-    
+    private PrintWriter pw;
+    private BufferedReader br;
+    private String roomname;
     String id;
 
     public void room_update() {
@@ -64,8 +68,7 @@ public class GUI_ChatRoom extends JFrame {
 			public void run() {
 				try {
 					dos.writeInt(Command.ROOMUPDATE);
-					dos.writeInt(roomNumber);
-					String roomname = dis.readUTF();
+					dos.writeUTF(roomname);
 					String leader = dis.readUTF();
 					int num = dis.readInt();
 					int maxnum = dis.readInt();
@@ -88,11 +91,14 @@ public class GUI_ChatRoom extends JFrame {
         t.start();
     }
     
-    GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, String roomname, String id) {
+    GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, String roomname, String id, PrintWriter pw, BufferedReader br) {
     	this.dos = dos;
     	this.dis = dis;
     	this.roomNumber = roomNumber;
     	this.id = id;
+    	this.pw = pw;
+    	this.br = br;
+    	this.roomname = roomname;
     	ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); 
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
@@ -114,7 +120,7 @@ public class GUI_ChatRoom extends JFrame {
         
         btn_ok.setBounds(new Rectangle(400, 320, 60, 25));
         btn_ok.setText("확인");
-
+       
 
         btn_file.setBounds(new Rectangle(470, 320, 50, 25));
         btn_file.setText("+");
