@@ -12,9 +12,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +58,9 @@ public class GUI_ChatRoom extends JFrame {
     private DataOutputStream dos;
     private DataInputStream dis;
     private int roomNumber;
-    
+    private PrintWriter pw;
+    private BufferedReader br;
+    private String roomname;
     String id;
     List <String> ml = new ArrayList<>();
 
@@ -67,8 +71,7 @@ public class GUI_ChatRoom extends JFrame {
 			public void run() {
 				try {
 					dos.writeInt(Command.ROOMUPDATE);
-					dos.writeInt(roomNumber);
-					String roomname = dis.readUTF();
+					dos.writeUTF(roomname);
 					String leader = dis.readUTF();
 					int num = dis.readInt();
 					int maxnum = dis.readInt();
@@ -91,16 +94,26 @@ public class GUI_ChatRoom extends JFrame {
         t.start();
     }
     
+<<<<<<< HEAD
     public void memberlist(String id) {
     	ml.add(id);
     }
     
     GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, int roomNumber, String id) {
+=======
+    GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, String roomname, String id, PrintWriter pw, BufferedReader br) {
+>>>>>>> dacea6e6bbf617a7297ee5248333a71652ff9e30
     	this.dos = dos;
     	this.dis = dis;
     	this.roomNumber = roomNumber;
     	this.id = id;
+<<<<<<< HEAD
     	memberlist(id);
+=======
+    	this.pw = pw;
+    	this.br = br;
+    	this.roomname = roomname;
+>>>>>>> dacea6e6bbf617a7297ee5248333a71652ff9e30
     	ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); 
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
@@ -122,7 +135,7 @@ public class GUI_ChatRoom extends JFrame {
         
         btn_ok.setBounds(new Rectangle(400, 320, 60, 25));
         btn_ok.setText("확인");
-
+       
 
         btn_file.setBounds(new Rectangle(470, 320, 50, 25));
         btn_file.setText("+");
@@ -190,7 +203,7 @@ public class GUI_ChatRoom extends JFrame {
             public void actionPerformed(ActionEvent e) {
             	try {
             		dos.writeInt(Command.EXITROOM);
-					dos.writeInt(roomNumber);
+					dos.writeUTF(roomname);
 					dos.writeUTF(id);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block

@@ -5,6 +5,11 @@ import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -12,6 +17,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -28,7 +34,9 @@ public class GUI_MakeRoom extends JFrame {
 	public static final int INIT_VAL = 5;
 	private JLabel lbl_UpdateNumber;
 	private JSlider sb_UpdateNumber;
-	private int number; // »ç¶÷ ¼ıÀÚ
+	private int number; // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	DataOutputStream dos;
+	DataInputStream dis;
 
 	/**
 	 * Launch the application.
@@ -37,9 +45,11 @@ public class GUI_MakeRoom extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public GUI_MakeRoom() {
-		
-		ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); // ÇÁ·¹ÀÓ ¾ÆÀÌÄÜ
+	public GUI_MakeRoom(DataOutputStream dos, DataInputStream dis, String id, PrintWriter pw, BufferedReader br) {
+		this.number = 5;
+		this.dos = dos;
+		this.dis = dis;
+		ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
 		
@@ -68,10 +78,10 @@ public class GUI_MakeRoom extends JFrame {
 		contentPane.add(tf_UpdateName);
 		
 		sb_UpdateNumber = new JSlider(0,10,INIT_VAL);
-		sb_UpdateNumber.setMajorTickSpacing(5); //Å« ´«±İ °£°İ 5·Î ¼³Á¤
-		sb_UpdateNumber.setMinorTickSpacing(1); //ÀÛÀº ´«±İ °£°İ 1·Î ¼³Á¤
-		sb_UpdateNumber.setPaintTicks(true); //´«±İÀ» Ç¥½ÃÇÑ´Ù.
-		sb_UpdateNumber.setPaintLabels(true); //°ªÀ» ·¹ÀÌºí·Î Ç¥½ÃÇÑ´Ù.
+		sb_UpdateNumber.setMajorTickSpacing(5); //Å« ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		sb_UpdateNumber.setMinorTickSpacing(1); //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		sb_UpdateNumber.setPaintTicks(true); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½.
+		sb_UpdateNumber.setPaintLabels(true); //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½.
 		sb_UpdateNumber.addChangeListener(new MyChangeListener());
 		sb_UpdateNumber.setBounds(124, 141, 236, 51);
 		contentPane.add(sb_UpdateNumber);
@@ -86,6 +96,43 @@ public class GUI_MakeRoom extends JFrame {
 		btn_Ok.setFont(new Font("Gulim", Font.PLAIN, 15));
 		btn_Ok.setBounds(164, 202, 97, 40);
 		contentPane.add(btn_Ok);
+		btn_Ok.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Thread t = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							
+							if (number > 1) {
+								dos.writeInt(Command.MAKEROOM);
+								dos.writeUTF(id);
+								String updateroomname = tf_UpdateName.getText();
+								System.out.println(updateroomname);
+								dos.writeUTF(updateroomname);
+								dos.writeInt(number);
+								int isOk = dis.readInt();
+								if (isOk == 0) {
+									new GUI_ChatRoom(dos, dis, updateroomname, id, pw, br);
+								} else {
+									JOptionPane.showMessageDialog(null, "ë™ì¼í•œ ì´ë¦„ì˜ ë°©ì´ ìˆìŠµë‹ˆë‹¤ ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”.");
+								}
+							} else {
+								JOptionPane.showMessageDialog(null, "ì¸ì›ìˆ˜ë¥¼ í™•ì¸í•´ì£¼ì„¸ìš”");
+							}
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				});
+				t.start();
+				dispose();
+			}
+		});
+		
 		
 		JLabel lblNewLabel = new JLabel("\uBC29 \uB9CC\uB4E4\uAE30");
 		lblNewLabel.setFont(new Font("Gulim", Font.BOLD, 20));

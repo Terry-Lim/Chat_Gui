@@ -4,10 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -29,9 +32,13 @@ public class GUI_ChannelSelection extends JFrame {
 	private String id;
 	private String[] datas;
 	private JList<String> list;
+	private PrintWriter pw;
+	private BufferedReader br;
+	
+
+	
 	
 	public void ChannelHomeReset() {
-		
 		
 		Thread t = new Thread(new Runnable() {
 			
@@ -45,7 +52,7 @@ public class GUI_ChannelSelection extends JFrame {
 					int num = 0;
 					String roomtxt = null;
 					List <String> roomnamelist = new ArrayList<>();
-		 			for (int i = 0; i < roomnum; i++) {
+		 			for (int i = 1; i <= roomnum; i++) {
 		 				dos.writeInt(Command.GETSELETEDROOM);
 						dos.writeInt(i);
 						roomname = dis.readUTF();
@@ -80,7 +87,6 @@ public class GUI_ChannelSelection extends JFrame {
 						roomnamelist.add(String.valueOf(sb));
 					}
 		 			DefaultListModel<String> model = new DefaultListModel<>();
-		 			model.addElement(roomtxt);
 		 			
 		 			for (int i =0; i < roomnamelist.size(); i++) {
 		 				model.addElement(roomnamelist.get(i));
@@ -96,41 +102,14 @@ public class GUI_ChannelSelection extends JFrame {
 		
 		
 	}
-	public void FavoriteChannel() {
-		
-		setBounds(100, 100, 472, 323);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		this.setVisible(true);
-	}
-	public void	FindChannel() {
-		
-		setBounds(100, 100, 472, 323);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		this.setVisible(true);
-	}
-	public void MakingChannel() {
-		
-		setBounds(100, 100, 472, 323);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		this.setVisible(true);
-	}
 	
 	
-	
-	
-	public GUI_ChannelSelection(DataOutputStream dos, DataInputStream dis, String id) {
+	public GUI_ChannelSelection(DataOutputStream dos, DataInputStream dis, String id, PrintWriter pw, BufferedReader br) {
 		this.dos = dos;
 		this.dis = dis;
 		this.id = id;
+		this.pw = pw;
+		this.br = br;
 		ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); // 프레임 아이콘
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
@@ -157,7 +136,7 @@ public class GUI_ChannelSelection extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				FavoriteChannel();
+				
 			}
 		});
 		
@@ -167,9 +146,59 @@ public class GUI_ChannelSelection extends JFrame {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String roomname = JOptionPane.showInputDialog("방 찾기", "방 제목을 입력하세요");
-				
-			
+				Thread t = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						String roomname = JOptionPane.showInputDialog("방 찾기", "방 제목을 입력하세요");
+						String roomtxt = null;
+						try {
+							dos.writeInt(Command.FINDROOM);
+							dos.writeUTF(roomname);
+							int count = dis.readInt();
+							if (count == 1) { 
+								roomname = dis.readUTF();
+								int max = dis.readInt();
+								int num = dis.readInt();
+								roomtxt = roomname + "                                   " +num + "/" + max;
+								StringBuffer sb = new StringBuffer();
+								sb.append(roomtxt);
+								int n = 100 - roomtxt.getBytes().length; // roomtxt 바이트값
+								for (int j = 0; j < n; j++) {
+									sb.insert(30, " ");
+									if (j == 59 ) {
+										sb.insert(30, "  ");
+									} else if (j == 57 ) {
+										sb.insert(30, "  ");
+									} else if (j == 55 ) {
+										sb.insert(30, "  ");
+									} else if (j == 53 ) {
+										sb.insert(30, "  ");
+									} else if (j == 51 ) {
+										sb.insert(30, "  ");
+									} else if (j == 49 ) {
+										sb.insert(30, "  ");
+									} else if (j == 47 ) {
+										sb.insert(30, "  ");
+									} else if (j == 45 ) {
+										sb.insert(30, "  ");
+									} else if (j == 43 ) {
+										sb.insert(30, "  ");
+									}
+								}
+								DefaultListModel<String> model = new DefaultListModel<>();
+					 			model.addElement(roomtxt);
+					 			list.setModel(model);
+							} else {
+								JOptionPane.showMessageDialog(null, "입력한 방이 없습니다.");
+							}
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				});
+				t.start();
 			}
 		});
 		
@@ -180,7 +209,7 @@ public class GUI_ChannelSelection extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			
-				new GUI_MakeRoom();
+				new GUI_MakeRoom(dos, dis, id, pw, br);
 			}
 		});
 		
@@ -189,7 +218,7 @@ public class GUI_ChannelSelection extends JFrame {
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("현재인원/ 최대인원"); 
-		lblNewLabel_1.setBounds(336, 34, 107, 16);
+		lblNewLabel_1.setBounds(330, 47, 120, 16);
 		contentPane.add(lblNewLabel_1);
 		
 		datas = new String[] {"Char1","Char2","Char3","Char4","Char5","Char6","Char5","Char5","Char5","Char5","Char5","Char5","Char5","Char5","Char5"};
@@ -230,18 +259,24 @@ public class GUI_ChannelSelection extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 			
 				int roomNum = list.getSelectedIndex();
-				
+				String txt =(String) list.getSelectedValue();
+				String[] split = txt.split("                ");
+				String rn = split[0];
 				try {
 					dos.writeInt(Command.ENTERROOM);
-					dos.writeInt(roomNum);
+					dos.writeUTF(rn);
 					dos.writeUTF(id);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
+<<<<<<< HEAD
 				new GUI_ChatRoom(dos, dis, roomNum, id);
 				
+=======
+				new GUI_ChatRoom(dos, dis, rn, id, pw, br);
+>>>>>>> dacea6e6bbf617a7297ee5248333a71652ff9e30
 			}
 		});
 		JScrollPane scrollPane = new JScrollPane(list);	
@@ -251,12 +286,7 @@ public class GUI_ChannelSelection extends JFrame {
 		scrollPane.setBounds(26, 75, 417, 214);
 		contentPane.add(scrollPane);
 		
-		
-		JLabel lblNewLabel_2 = new JLabel("New label"); //수정 현재인원/ 최대인원
-		lblNewLabel_2.setBounds(336, 47, 107, 16);
-		contentPane.add(lblNewLabel_2);
 		ChannelHomeReset();
 		setVisible(true);
-	
 	}
 }

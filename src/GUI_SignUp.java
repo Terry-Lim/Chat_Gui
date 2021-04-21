@@ -17,9 +17,11 @@ import javax.swing.JPasswordField;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.time.LocalDate;
 
@@ -48,7 +50,7 @@ public class GUI_SignUp extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public GUI_SignUp(DataOutputStream dos, DataInputStream dis) {
+	public GUI_SignUp(DataOutputStream dos, DataInputStream dis, PrintWriter pw, BufferedReader br) {
 		this.dos = dos;
 		this.dis = dis;
 		setResizable(false);
@@ -167,7 +169,7 @@ public class GUI_SignUp extends JFrame {
 									dos.writeUTF(tf_tell1.getText());
 									dos.writeUTF(tf_tell2.getText());
 									dos.writeUTF(tf_tell3.getText());
-									new GUI_Login(dos, dis); 
+									new GUI_Login(dos, dis, pw, br); 
 									dispose();
 								} catch (IOException e1) {
 									// TODO Auto-generated catch block

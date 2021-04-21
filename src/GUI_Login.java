@@ -2,9 +2,11 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,10 +34,14 @@ public class GUI_Login extends JFrame {
 	private JPanel contentPane;
 	private JPasswordField pf_pw;
 	private JTextField tf_id;
+	private PrintWriter pw;
+	private BufferedReader br;
 
-	public GUI_Login(DataOutputStream dos, DataInputStream dis) {
+	public GUI_Login(DataOutputStream dos, DataInputStream dis , PrintWriter pw, BufferedReader br) {
 		this.dos = dos;
 		this.dis = dis;
+		this.pw = pw;
+		this.br = br;
 		ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); // ������ ������
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
@@ -76,7 +82,7 @@ public class GUI_Login extends JFrame {
 							int x = dis.readInt();
 							if (x == 1) {
 								JOptionPane.showMessageDialog(null, "로그인 되었습니다.");
-								new GUI_ChannelSelection(dos, dis, tf_id.getText()); // ȸ������ �Ķ���͸� �־����
+								new GUI_ChannelSelection(dos, dis, tf_id.getText(), pw, br); // ȸ������ �Ķ���͸� �־����
 								dispose();
 							} else if (x == 2) {
 								JOptionPane.showMessageDialog(null, "아이디를 확인해주세요.");
@@ -109,7 +115,7 @@ public class GUI_Login extends JFrame {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						new GUI_SignUp(dos, dis); 						
+						new GUI_SignUp(dos, dis, pw, br); 						
 					}
 				});
 			}
