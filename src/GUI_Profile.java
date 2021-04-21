@@ -19,7 +19,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
-
+// 수정
 public class GUI_Profile extends JFrame {
 	
 	private DataOutputStream dos;
