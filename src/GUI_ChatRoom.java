@@ -33,6 +33,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
+import org.w3c.dom.UserDataHandler;
+
 public class GUI_ChatRoom extends JFrame {
 
     private JTextArea txtarea = new JTextArea();
@@ -56,6 +58,7 @@ public class GUI_ChatRoom extends JFrame {
     private int roomNumber;
     
     String id;
+    List <String> ml = new ArrayList<>();
 
     public void room_update() {
     	Thread t = new Thread(new Runnable() {
@@ -88,11 +91,16 @@ public class GUI_ChatRoom extends JFrame {
         t.start();
     }
     
+    public void memberlist(String id) {
+    	ml.add(id);
+    }
+    
     GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, int roomNumber, String id) {
     	this.dos = dos;
     	this.dis = dis;
     	this.roomNumber = roomNumber;
     	this.id = id;
+    	memberlist(id);
     	ImageIcon imageIcon_frame = new ImageIcon(".\\image\\logo_frame.png"); 
 		Image image_framImage = imageIcon_frame.getImage();
 		this.setIconImage(image_framImage);
@@ -264,21 +272,23 @@ public class GUI_ChatRoom extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new GUI_Profile();
+				new GUI_Profile(id, dos, dis); //생성자 안에 누른 id값을 넣는다..
 				System.out.println("클릭");
+				System.out.println(id);
+				
 				
 			}
 		});
         
+        RoomManager rm = new RoomManager();
         pm.add(item1);
         pm.add(item2);
         pm.add(item3);
-        List <String> ml = new ArrayList<>();
-        ml.add("1111");
-        ml.add("2222");
+        
         DefaultListModel<String> m = new DefaultListModel<>();
+        
         m.addElement(ml.get(0));
-        m.addElement(ml.get(1));
+        
         list.setModel(m);
         list.add(pm);
         pm.addActionListener(new ActionListener() {

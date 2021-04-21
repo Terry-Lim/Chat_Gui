@@ -241,6 +241,7 @@ public class GUI_ChannelSelection extends JFrame {
 				}
 				
 				new GUI_ChatRoom(dos, dis, roomNum, id);
+				
 			}
 		});
 		JScrollPane scrollPane = new JScrollPane(list);	
