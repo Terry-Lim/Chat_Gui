@@ -69,7 +69,70 @@ public class GUI_ChannelSelection extends JFrame {
 		btn_bookmark.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				Thread t = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							dos.writeInt(Command.GETBOOKMARK);
+							dos.writeUTF(id);
+							int roomnum = dis.readInt();
+							String roomname = null;
+							String roomtxt = null;
+							int max = 0;
+							int num = 0;
+							int [] room = new int [roomnum];
+							for (int i = 0; i < roomnum; i++) {
+								room[i] = dis.readInt();
+							}
+							List <String> roomnamelist = new ArrayList<>();
+							for (int i = 0; i < roomnum; i++) {
+								dos.writeInt(Command.GETSELETEDROOM);
+								dos.writeInt(room[roomnum - 1 -i]);
+								roomname = dis.readUTF();
+								max = dis.readInt();
+								num = dis.readInt();
+								roomtxt = roomname + "                                   " +num + "/" + max;
+								StringBuffer sb = new StringBuffer();
+								sb.append(roomtxt);
+								int n = 100 - roomtxt.getBytes().length; // roomtxt 바이트값
+								for (int j = 0; j < n; j++) {
+									sb.insert(30, " ");
+									if (j == 59 ) {
+										sb.insert(30, "  ");
+									} else if (j == 57 ) {
+										sb.insert(30, "  ");
+									} else if (j == 55 ) {
+										sb.insert(30, "  ");
+									} else if (j == 53 ) {
+										sb.insert(30, "  ");
+									} else if (j == 51 ) {
+										sb.insert(30, "  ");
+									} else if (j == 49 ) {
+										sb.insert(30, "  ");
+									} else if (j == 47 ) {
+										sb.insert(30, "  ");
+									} else if (j == 45 ) {
+										sb.insert(30, "  ");
+									} else if (j == 43 ) {
+										sb.insert(30, "  ");
+									}
+								}
+								roomnamelist.add(String.valueOf(sb));
+							}
+							DefaultListModel<String> model = new DefaultListModel<>();
+				 			
+				 			for (int i =0; i < roomnamelist.size(); i++) {
+				 				model.addElement(roomnamelist.get(i));
+				 			}
+				 			list.setModel(model);
+							
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				});
+				t.start();
 			}
 		});
 		
