@@ -167,6 +167,7 @@ public class GUI_ChatRoom extends JFrame {
             		dos.writeInt(Command.EXITROOM);
 					dos.writeUTF(roomname);
 					dos.writeUTF(id);
+					new GUI_ChannelSelection(dos, dis, id, pw, br);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -220,6 +221,7 @@ public class GUI_ChatRoom extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			new GUI_ChannelSelection(dos, dis, id, pw, br);
 			}
 			
 			@Override
@@ -249,127 +251,98 @@ public class GUI_ChatRoom extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new GUI_Profile();
+				new GUI_Profile(id, dos, dis);
 				System.out.println("클릭");
 				
 			}
 		});
         
-        update_participants();
       
         setVisible(true);
     }
     
-    public void update_participants() {
+    public void update_room() {
     	Thread t = new Thread(new Runnable() {
 	
 			@Override
 			public void run() {
-					if (get() == true) {
-						List <String> ml = new ArrayList<>();
-						try {
-							dos.writeInt(Command.PARTICIPANTSUPDATE);
-							dos.writeUTF(roomname);
-							int roomnum = 0;
-							roomnum = dis.readInt();
+					List <String> ml = new ArrayList<>();
+					try {
+						dos.writeInt(Command.PARTICIPANTSUPDATE);
+						dos.writeUTF(roomname);
+						int roomnum = 0;
+						roomnum = dis.readInt();
+						for (int i = 0; i < roomnum; i++) {
+							String x = dis.readUTF();
+							ml.add(x);
+						} 	
 							
-							for (int i = 0; i < roomnum; i++) {
-								String x = dis.readUTF();
-								ml.add(x);
-							} 	
-							
-						} catch (IOException e1) {
-						   	e1.printStackTrace();
-						} 
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} 
 						    
-						DefaultListModel<String> m = new DefaultListModel<>();
+					DefaultListModel<String> m = new DefaultListModel<>();
 						   
-						for (int i = 0; i < ml.size(); i++) {
-							m.addElement(ml.get(i));
-						}
-						      
-						list.setModel(m);
-						list.add(pm);
-						pm.addActionListener(new ActionListener() {
-						  	
-							@Override
-							public void actionPerformed(ActionEvent e) {
-							  	System.out.println(e.getActionCommand());
-							}
-						});
-						list.addMouseListener(new MouseListener() {
-							  	
-							@Override
-							public void mouseReleased(MouseEvent e) {
-							}
-							  	
-							@Override
-							public void mousePressed(MouseEvent e) {
-						  	}
-							  	
-							@Override
-							public void mouseExited(MouseEvent e) {
-						  	}
-							  	
-							@Override
-							public void mouseEntered(MouseEvent e) {
-						  	}
-							  	
-							@Override
-						  	public void mouseClicked(MouseEvent e) {
-							  	System.out.println(list.getSelectedIndex());
-							  	pm.show(list, e.getX(), e.getY());
-							}
-						});
-						setf();
+					for (int i = 0; i < ml.size(); i++) {
+						m.addElement(ml.get(i));
 					}
+						      
+					list.setModel(m);
+					list.add(pm);
+					pm.addActionListener(new ActionListener() {
+						  	
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							  System.out.println(e.getActionCommand());
+						}
+					});
+					list.addMouseListener(new MouseListener() {
+					  	
+						@Override
+						public void mouseReleased(MouseEvent e) {
+						}
+							  	
+						@Override
+						public void mousePressed(MouseEvent e) {
+						}
+							  	
+						@Override
+						public void mouseExited(MouseEvent e) {
+						}
+							  	
+						@Override
+						public void mouseEntered(MouseEvent e) {
+						}
+							  	
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							System.out.println(list.getSelectedIndex());
+							pm.show(list, e.getX(), e.getY());
+						}
+					});	
+					try {
+						dos.writeInt(Command.ROOMUPDATE);
+						dos.writeUTF(roomname);
+						String leader = dis.readUTF();
+						int num = dis.readInt();
+						int maxnum = dis.readInt();
+						lblinwon_roomname.setText(roomname); 
+						lblinwon_boss.setText(leader);
+						String.valueOf(num);
+						String.valueOf(maxnum);
+						StringBuilder sb = new StringBuilder();
+						sb.append(num);
+						sb.append("/");
+						sb.append(maxnum);
+						lblinwon_guest.setText(String.valueOf(sb));
 					
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} 	
 			}
 		});
     	t.start();	
     }
-    public void update_room() {
     
-    	Thread t = new Thread(new Runnable() {
-		
-			@Override
-			public void run() {
-					if (get() == false) {
-						try {
-							dos.writeInt(Command.ROOMUPDATE);
-							dos.writeUTF(roomname);
-							String leader = dis.readUTF();
-							int num = dis.readInt();
-							int maxnum = dis.readInt();
-							lblinwon_roomname.setText(roomname); 
-							lblinwon_boss.setText(leader);
-							String.valueOf(num);
-							String.valueOf(maxnum);
-							StringBuilder sb = new StringBuilder();
-							sb.append(num);
-							sb.append("/");
-							sb.append(maxnum);
-							lblinwon_guest.setText(String.valueOf(sb));
-				
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} 	
-						sett();
-					}
-			}
-		}); 
-        t.start();
-        
-    }
-    synchronized static public boolean get() {
-		return check;
-	}
-	synchronized static public void setf() {
-		check = false;
-	}
-	synchronized static public void sett() {
-		check = true;
-	}
 	
 }

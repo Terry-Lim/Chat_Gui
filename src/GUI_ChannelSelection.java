@@ -142,6 +142,7 @@ public class GUI_ChannelSelection extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 			
 				new GUI_MakeRoom(dos, dis, id, pw, br);
+				dispose();
 			}
 		});
 		
@@ -194,6 +195,7 @@ public class GUI_ChannelSelection extends JFrame {
 					e1.printStackTrace();
 				}
 				new GUI_ChatRoom(dos, dis, rn, id, pw, br);
+				dispose();
 			}
 		});
 		JScrollPane scrollPane = new JScrollPane(list);	
