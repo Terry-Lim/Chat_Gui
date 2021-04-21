@@ -1,12 +1,12 @@
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.SystemColor;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -247,9 +247,14 @@ public class GUI_Update extends JFrame {
 		            folderPath = "";
 		        }
 		       ImageIcon icon = new ImageIcon(folderPath);
-		       lbl_icon.setIcon(icon);
+		       Image image = icon.getImage();
+		       Image changedimg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH );
+		       ImageIcon chandedicon = new ImageIcon(changedimg);
+		       lbl_icon.setIcon(chandedicon);
+		       System.out.println(folderPath);
 			}
 		});
+		
 		// 새로운 창이 켜질때 정보를 읽어와 텍스트에 넣음
 		String name = null;
 		String birth = null;
