@@ -7,7 +7,6 @@ import java.awt.PopupMenu;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -19,6 +18,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -27,7 +28,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -35,8 +35,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
-public class GUI_ChatRoom extends JFrame {
 
+public class GUI_ChatRoom extends JFrame {
+	private static boolean check;
+	
     private JTextArea txtarea = new JTextArea();
     private JScrollPane talkPane1 = new JScrollPane();
     private JTextField txtsend = new JTextField();
@@ -60,36 +62,11 @@ public class GUI_ChatRoom extends JFrame {
     private BufferedReader br;
     private String roomname;
     String id;
+	private PopupMenu pm;
 
-    public void room_update() {
-    	Thread t = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					dos.writeInt(Command.ROOMUPDATE);
-					dos.writeUTF(roomname);
-					String leader = dis.readUTF();
-					int num = dis.readInt();
-					int maxnum = dis.readInt();
-					lblinwon_roomname.setText(roomname); 
-					lblinwon_boss.setText(leader);
-					String.valueOf(num);
-					String.valueOf(maxnum);
-					StringBuilder sb = new StringBuilder();
-					sb.append(num);
-					sb.append("/");
-					sb.append(maxnum);
-					lblinwon_guest.setText(String.valueOf(sb));
-
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		}); 
-        t.start();
-    }
+    
+    
+   
     
     GUI_ChatRoom(DataOutputStream dos, DataInputStream dis, String roomname, String id, PrintWriter pw, BufferedReader br) {
     	this.dos = dos;
@@ -204,7 +181,7 @@ public class GUI_ChatRoom extends JFrame {
             }
         });
      
-        room_update();
+        update_room();
    
         this.addWindowListener(new WindowListener() {
 			
@@ -258,14 +235,16 @@ public class GUI_ChatRoom extends JFrame {
 			}
 		});
         
-        PopupMenu pm = new PopupMenu();
+        pm = new PopupMenu();
         MenuItem item1 = new MenuItem("프로필 보기");
         MenuItem item2 = new MenuItem("강퇴");
         MenuItem item3 = new MenuItem("신고하기");
         item1.setActionCommand("1");
         item2.setActionCommand("2");
         item3.setActionCommand("3");
-        
+        pm.add(item1);
+        pm.add(item2);
+        pm.add(item3);
         item1.addActionListener(new ActionListener() {
 			
 			@Override
@@ -276,58 +255,121 @@ public class GUI_ChatRoom extends JFrame {
 			}
 		});
         
-        pm.add(item1);
-        pm.add(item2);
-        pm.add(item3);
-        List <String> ml = new ArrayList<>();
-        ml.add("1111");
-        ml.add("2222");
-        DefaultListModel<String> m = new DefaultListModel<>();
-        m.addElement(ml.get(0));
-        m.addElement(ml.get(1));
-        list.setModel(m);
-        list.add(pm);
-        pm.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(e.getActionCommand());
-			}
-		});
-        list.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println(list.getSelectedIndex());
-				pm.show(list, e.getX(), e.getY());
-			}
-		});
+        update_participants();
+      
         setVisible(true);
     }
-
-   
+    
+    public void update_participants() {
+    	Thread t = new Thread(new Runnable() {
+	
+			@Override
+			public void run() {
+					if (get() == true) {
+						List <String> ml = new ArrayList<>();
+						try {
+							dos.writeInt(Command.PARTICIPANTSUPDATE);
+							dos.writeUTF(roomname);
+							int roomnum = 0;
+							roomnum = dis.readInt();
+							
+							for (int i = 0; i < roomnum; i++) {
+								String x = dis.readUTF();
+								ml.add(x);
+							} 	
+							
+						} catch (IOException e1) {
+						   	e1.printStackTrace();
+						} 
+						    
+						DefaultListModel<String> m = new DefaultListModel<>();
+						   
+						for (int i = 0; i < ml.size(); i++) {
+							m.addElement(ml.get(i));
+						}
+						      
+						list.setModel(m);
+						list.add(pm);
+						pm.addActionListener(new ActionListener() {
+						  	
+							@Override
+							public void actionPerformed(ActionEvent e) {
+							  	System.out.println(e.getActionCommand());
+							}
+						});
+						list.addMouseListener(new MouseListener() {
+							  	
+							@Override
+							public void mouseReleased(MouseEvent e) {
+							}
+							  	
+							@Override
+							public void mousePressed(MouseEvent e) {
+						  	}
+							  	
+							@Override
+							public void mouseExited(MouseEvent e) {
+						  	}
+							  	
+							@Override
+							public void mouseEntered(MouseEvent e) {
+						  	}
+							  	
+							@Override
+						  	public void mouseClicked(MouseEvent e) {
+							  	System.out.println(list.getSelectedIndex());
+							  	pm.show(list, e.getX(), e.getY());
+							}
+						});
+						setf();
+					}
+					
+			}
+		});
+    	t.start();	
+    }
+    public void update_room() {
+    
+    	Thread t = new Thread(new Runnable() {
+		
+			@Override
+			public void run() {
+					if (get() == false) {
+						try {
+							dos.writeInt(Command.ROOMUPDATE);
+							dos.writeUTF(roomname);
+							String leader = dis.readUTF();
+							int num = dis.readInt();
+							int maxnum = dis.readInt();
+							lblinwon_roomname.setText(roomname); 
+							lblinwon_boss.setText(leader);
+							String.valueOf(num);
+							String.valueOf(maxnum);
+							StringBuilder sb = new StringBuilder();
+							sb.append(num);
+							sb.append("/");
+							sb.append(maxnum);
+							lblinwon_guest.setText(String.valueOf(sb));
+				
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} 	
+						sett();
+					}
+			}
+		}); 
+        t.start();
+        
+    }
+    synchronized static public boolean get() {
+		return check;
+	}
+	synchronized static public void setf() {
+		check = false;
+	}
+	synchronized static public void sett() {
+		check = true;
+	}
+	
 }
