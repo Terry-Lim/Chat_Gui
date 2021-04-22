@@ -33,6 +33,7 @@ public class GUI_Profile extends JFrame {
 	JLabel textPane_1_3;
 	JLabel memberimage;
 	ImageIcon image = null;
+	String id;
 
 	private JPanel contentPane;
 
@@ -40,6 +41,7 @@ public class GUI_Profile extends JFrame {
 	public GUI_Profile(String id, DataOutputStream dos, DataInputStream dis) {
 		this.dos = dos;
 		this.dis = dis;
+		this.id = id;
 		setTitle("Profile");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

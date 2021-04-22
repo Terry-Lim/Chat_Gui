@@ -251,8 +251,10 @@ public class GUI_ChatRoom extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new GUI_Profile(id, dos, dis);
-				System.out.println("클릭");
+				
+				String selectedId = list.getSelectedValue();
+				new GUI_Profile(selectedId, dos, dis);
+				
 				
 			}
 		});

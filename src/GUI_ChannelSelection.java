@@ -221,7 +221,7 @@ public class GUI_ChannelSelection extends JFrame {
 		list = new JList<String>();
 		list.setListData(datas);  //리스트 객체의 설정과 항목들 설정
 
-		list.setSelectionBackground(Color.YELLOW);
+		list.setSelectionBackground(Color.orange);
 		list.setSelectionForeground(Color.RED);
 		list.addMouseListener(new MouseListener() {
 			
